@@ -4,6 +4,10 @@ I rarely use github (3rd or 4th time) so I have no idea what I'm doing right now
 
 Scales up to 3-4M Particles at 6 substeps on my RTX 4070 before going under 60 fps so I think any NVIDIA gpu can handle this. Very memory bandwidth intensive!!!
 
+Video:
+
+https://www.youtube.com/watch?v=C_qEfIPdrrE&ab_channel=murk
+
 **CONTROLS:**
 
 E - Generate Softbody
