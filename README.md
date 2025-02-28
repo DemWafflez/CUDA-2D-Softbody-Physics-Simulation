@@ -2,16 +2,25 @@ This is one of my longest projects I've ever worked on (2 months) and I think th
 
 I rarely use github (3rd or 4th time) so I have no idea what I'm doing right now. 
 
-**CONTROLS: **
+**CONTROLS:**
+
 E - Generate Softbody
+
 R - Reset World
+
 SPACE - Pause
+
 G - Slow mo
 
 **REQUIREMENTS TO COMPILE:**
+
 GLEW
+
 GLFW
+
 Cuda Toolkit
 
 **REQUIREMENTS TO RUN:**
+
 NVIDIA GPU
+
