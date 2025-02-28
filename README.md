@@ -12,6 +12,10 @@ SPACE - Pause
 
 G - Slow mo
 
+LEFT CLICK - Particle mover
+
+RIGHT CLICK - Move camera
+
 **REQUIREMENTS TO COMPILE:**
 
 GLEW
