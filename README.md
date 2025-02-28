@@ -2,6 +2,8 @@ This is one of my longest projects I've ever worked on (2 months) and I think th
 
 I rarely use github (3rd or 4th time) so I have no idea what I'm doing right now. 
 
+Scales up to 3-4M Particles at 6 substeps on my RTX 4070 before going under 60 fps so I think any NVIDIA gpu can handle this. Very memory bandwidth intensive!!!
+
 **CONTROLS:**
 
 E - Generate Softbody
@@ -26,5 +28,5 @@ Cuda Toolkit
 
 **REQUIREMENTS TO RUN:**
 
-NVIDIA GPU
+NVIDIA GPU (Sucks to be an AMD user!!!!)
 
