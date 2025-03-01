@@ -1,13 +1,17 @@
 #include "ParticleManager.cuh"
 
-namespace ParticleManager {
-	__device__ __inline__ float fclamp(float x, float min, float max) {
+namespace ParticleManager
+{
+	__device__ __inline__ float fclamp(float x, float min, float max)
+	{
 		return fmaxf(fminf(x, max), min);
 	}
 
-	__global__ void updateMouse(float mx, float my, float* x, float* y, float* r, int n) {
+	__global__ void updateMouse(float mx, float my, float *x, float *y, float *r, int n)
+	{
 		int i = blockIdx.x * blockDim.x + threadIdx.x;
-		if (i >= n) return;
+		if (i >= n)
+			return;
 
 		// mouse grabbing
 
@@ -19,7 +23,8 @@ namespace ParticleManager {
 		float dy = py - my;
 
 		float magSq = dx * dx + dy * dy;
-		if (magSq > MOUSE_MAX_DISTANCE * MOUSE_MAX_DISTANCE) return;
+		if (magSq > MOUSE_MAX_DISTANCE * MOUSE_MAX_DISTANCE)
+			return;
 
 		float nx = MOUSE_FORCE * dx;
 		float ny = MOUSE_FORCE * dy;
@@ -28,23 +33,28 @@ namespace ParticleManager {
 		y[i] -= ny;
 	}
 
-	__device__ __forceinline__ void updateWorldBound(float px, float py, float pr, float dx, float dy, float* ox, float* oy) {
+	__device__ __forceinline__ void updateWorldBound(float px, float py, float pr, float dx, float dy, float *ox, float *oy)
+	{
 		px += CENTER_X;
 		py += CENTER_Y;
 
 		float depthX = 0;
 		float depthY = 0;
-		
-		if (px - pr < 0) {
+
+		if (px - pr < 0)
+		{
 			depthX = 0 - (px - pr);
 		}
-		else if (px + pr > WORLD_WIDTH) {
+		else if (px + pr > WORLD_WIDTH)
+		{
 			depthX = WORLD_WIDTH - (px + pr);
 		}
-		if (py - pr < 0) {
+		if (py - pr < 0)
+		{
 			depthY = 0 - (py - pr);
 		}
-		else if (py + pr > WORLD_HEIGHT) {
+		else if (py + pr > WORLD_HEIGHT)
+		{
 			depthY = WORLD_HEIGHT - (py + pr);
 		}
 
@@ -53,9 +63,11 @@ namespace ParticleManager {
 		*oy += depthY * FLOOR_HARDNESS - dy * fabsf(depthX) * FRICTION_SCALE;
 	}
 
-	__global__ void updatePosition(float* x, float* y, float* r, float* lx, float* ly, int n) {
+	__global__ void updatePosition(float *x, float *y, float *r, float *lx, float *ly, int n)
+	{
 		int i = blockIdx.x * blockDim.x + threadIdx.x;
-		if (i >= n) return;
+		if (i >= n)
+			return;
 
 		float px = x[i];
 		float py = y[i];
@@ -70,7 +82,7 @@ namespace ParticleManager {
 		dx = fclamp(dx * (1 - DT * AIR_RESIST_SCALE), -MAX_VELOCITY, MAX_VELOCITY);
 		dy = fclamp(dy * (1 - DT * AIR_RESIST_SCALE), -MAX_VELOCITY, MAX_VELOCITY);
 
-		// verlet 
+		// verlet
 
 		x[i] += dx;
 		y[i] += dy - G_DT_DT;
@@ -79,9 +91,11 @@ namespace ParticleManager {
 		ly[i] = py;
 	}
 
-	__global__ void updateCollision(float* x, float* y, float* r, float* lx, float* ly, int* hashes, int* starts, int n) {
+	__global__ void updateCollision(float *x, float *y, float *r, float *lx, float *ly, int *hashes, int *starts, int n)
+	{
 		int i = blockIdx.x * blockDim.x + threadIdx.x;
-		if (i >= n) return;
+		if (i >= n)
+			return;
 
 		float ax = x[i];
 		float ay = y[i];
@@ -90,9 +104,11 @@ namespace ParticleManager {
 		int indices[MAX_CHECKS];
 		int total = queryRadiusBox(ax, ay, ar, hashes, starts, n, indices, 0);
 
-		for (int j = 0;j < total;j++) {
+		for (int j = 0; j < total; j++)
+		{
 			int k = indices[j];
-			if (i == k) continue;
+			if (i == k)
+				continue;
 
 			float bx = x[k];
 			float by = y[k];
@@ -104,7 +120,8 @@ namespace ParticleManager {
 			float magSq = dx * dx + dy * dy;
 			float tr = ar + br;
 
-			if (magSq < tr * tr) {
+			if (magSq < tr * tr)
+			{
 				float mag = sqrtf(magSq);
 				float depth = tr - mag;
 
@@ -121,7 +138,8 @@ namespace ParticleManager {
 			}
 		}
 	}
-	__device__ void handleConstraint(int i, int j, float* x, float* y) {
+	__device__ void handleConstraint(int i, int j, float *x, float *y)
+	{
 		float ax = x[i];
 		float ay = y[i];
 		float ar = RADIUS;
@@ -137,7 +155,8 @@ namespace ParticleManager {
 		float mag = sqrtf(magSq);
 		float tr = (ar + br) * SPRING_INITIAL_STRETCH;
 
-		if (fabs(mag - tr) > MIN_SPRING_DISTANCE && fabsf(mag - tr) < MAX_SPRING_DISTANCE) {
+		if (fabs(mag - tr) > MIN_SPRING_DISTANCE && fabsf(mag - tr) < MAX_SPRING_DISTANCE)
+		{
 			float depth = mag - tr;
 
 			float nx = dx / mag * depth * SPRING_HARDNESS;
@@ -152,46 +171,53 @@ namespace ParticleManager {
 			atomicAdd(y + j, -ny);
 		}
 	}
-	__global__ void updateConstraintsSlow(float* x, float* y, int* revIds, int n) { // "slow" but not slow
-		int tid = threadIdx.x;
-		int i = blockIdx.x * blockDim.x + tid;
-		if (i >= n) return;
+	__global__ void updateConstraintsSlow(float *x, float *y, int *revIds, int n)
+	{ // "slow" but not slow
+	  // int tid = threadIdx.x;
+	  // int i = blockIdx.x * blockDim.x + tid;
+	  // if (i >= n)
+	  // 	return;
 
-		int index = revIds[i]; // pointless optimization
+		// int index = revIds[i]; // pointless optimization
 
-		int dr[] = { 0,1,0,-1 };
-		int dc[] = { -1,0,1,0 };
-		int l = sizeof(dc) / sizeof(int);
-		
-		// soft body calculations
+		// int dr[] = {0, 1, 0, -1};
+		// int dc[] = {-1, 0, 1, 0};
+		// int l = sizeof(dc) / sizeof(int);
 
-		int bodyGroup = i / BODY_COUNT;
-		int localIndex = i % BODY_COUNT;
+		// // soft body calculations
 
-		int row = localIndex / R_BODY_COUNT;
-		int column = localIndex % R_BODY_COUNT;
+		// int bodyGroup = i / BODY_COUNT;
+		// int localIndex = i % BODY_COUNT;
 
-		for (int j = 0;j < l;j++) {
-			int cr = dr[j] + row;
-			int cc = dc[j] + column;
+		// int row = localIndex / R_BODY_COUNT;
+		// int column = localIndex % R_BODY_COUNT;
 
-			if (cr >= 0 && cr < R_BODY_COUNT && cc >= 0 && cc < R_BODY_COUNT) {
-				int reconLocalId = cr * R_BODY_COUNT + cc;
-				int k = bodyGroup * BODY_COUNT + reconLocalId;
+		// for (int j = 0; j < l; j++)
+		// {
+		// 	int cr = dr[j] + row;
+		// 	int cc = dc[j] + column;
 
-				handleConstraint(index, revIds[k], x, y);
-			}
-		}
+		// 	if (cr >= 0 && cr < R_BODY_COUNT && cc >= 0 && cc < R_BODY_COUNT)
+		// 	{
+		// 		int reconLocalId = cr * R_BODY_COUNT + cc;
+		// 		int k = bodyGroup * BODY_COUNT + reconLocalId;
+
+		// 		handleConstraint(index, revIds[k], x, y);
+		// 	}
+		// }
 	}
 
-	__global__ void updateReverseIds(int* ids, int* revIds, int n) { // failed optimization neeed to refactor later
+	__global__ void updateReverseIds(int *ids, int *revIds, int n)
+	{ // failed optimization neeed to refactor later
 		int i = blockIdx.x * blockDim.x + threadIdx.x;
-		if (i >= n) return;
+		if (i >= n)
+			return;
 
-		revIds[ids[i]] = i; 
+		revIds[ids[i]] = i;
 	}
 
-	__global__ void generate(float* x, float* y, float* r, float* lx, float* ly, int* ids, float ox, float oy, int rows, int columns, int start, int* index, int n) {
+	__global__ void generate(float *x, float *y, float *r, float *lx, float *ly, int *ids, float ox, float oy, int rows, int columns, int start, int *index, int n)
+	{
 		__shared__ int highestIndex;
 
 		int cx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -199,11 +225,13 @@ namespace ParticleManager {
 
 		int i = cy * columns + cx;
 
-		if (cx >= columns || cy >= rows || i + start >= n) return;
+		if (cx >= columns || cy >= rows || i + start >= n)
+			return;
 
 		// max size calculation
 
-		if (threadIdx.x + threadIdx.y == 0) {
+		if (threadIdx.x + threadIdx.y == 0)
+		{
 			highestIndex = *index;
 		}
 
@@ -213,7 +241,8 @@ namespace ParticleManager {
 
 		__syncthreads();
 
-		if (threadIdx.x + threadIdx.y == 0) {
+		if (threadIdx.x + threadIdx.y == 0)
+		{
 			atomicMax(index, highestIndex);
 		}
 
@@ -222,8 +251,8 @@ namespace ParticleManager {
 		int lc = cx / R_BODY_COUNT;
 		int lr = cy / R_BODY_COUNT;
 
-		float ax = cx * RADIUS * 2 + ox;
-		float ay = cy * RADIUS * 2 + oy;
+		float ax = cx * RADIUS * 2 * SPRING_INITIAL_STRETCH + ox;
+		float ay = cy * RADIUS * 2 * SPRING_INITIAL_STRETCH + oy;
 
 		x[i + start] = ax;
 		y[i + start] = ay;
@@ -236,37 +265,41 @@ namespace ParticleManager {
 		ids[i + start] = i + start;
 	}
 
-	inline void updateInput(float mx, float my, float* x, float* y, float* r, int size) {
+	inline void updateInput(float mx, float my, float *x, float *y, float *r, int size)
+	{
 		int tbp = 256;
 		int blocks = Utility::intCeil(size, tbp);
 
-		if (Input::getButton(0)) {
+		if (Input::getButton(0))
+		{
 			updateMouse<<<blocks, tbp>>>(mx, my, x, y, r, size);
 		}
 	}
 
-	void updateParticles(CudaGLBuffer& buffer, CudaBuffer& mapBuffer, CudaBuffer& softBuffer, vec2 mouse, int size) {
-		if (size == 0) return;
+	void updateParticles(CudaGLBuffer &buffer, CudaBuffer &mapBuffer, CudaBuffer &softBuffer, vec2 mouse, int size)
+	{
+		if (size == 0)
+			return;
 
-		float* x = (float*)buffer.hBuffers[0];
-		float* y = (float*)buffer.hBuffers[1];
-		float* r = (float*)buffer.hBuffers[2];
-		float* lx = (float*)buffer.hBuffers[3];
-		float* ly = (float*)buffer.hBuffers[4];
+		float *x = (float *)buffer.hBuffers[0];
+		float *y = (float *)buffer.hBuffers[1];
+		float *r = (float *)buffer.hBuffers[2];
+		float *lx = (float *)buffer.hBuffers[3];
+		float *ly = (float *)buffer.hBuffers[4];
 
-		int* hashes = (int*)mapBuffer.hBuffers[0];
-		int* indices = (int*)mapBuffer.hBuffers[1];
-		int* starts = (int*)mapBuffer.hBuffers[2];
+		int *hashes = (int *)mapBuffer.hBuffers[0];
+		int *indices = (int *)mapBuffer.hBuffers[1];
+		int *starts = (int *)mapBuffer.hBuffers[2];
 
-		int* ids = (int*)softBuffer.hBuffers[0];
-		int* revIds = (int*)softBuffer.hBuffers[1];
+		int *ids = (int *)softBuffer.hBuffers[0];
+		int *revIds = (int *)softBuffer.hBuffers[1];
 
 		int tbp = 256;
 		int blocks = Utility::intCeil(size, tbp);
 
 		updateInput(mouse.x, mouse.y, x, y, r, size);
 
-		updatePosition<<<blocks, tbp >>>(x, y, r, lx, ly, size);
+		updatePosition<<<blocks, tbp>>>(x, y, r, lx, ly, size);
 
 		updateReverseIds<<<blocks, tbp>>>(ids, revIds, size);
 		updateConstraintsSlow<<<blocks, tbp>>>(x, y, revIds, size);
@@ -276,22 +309,23 @@ namespace ParticleManager {
 		cudaDeviceSynchronize();
 	}
 
-	int generateParticles(vec2 pos, float w, float h, int start, CudaGLBuffer& buffer, CudaBuffer& softBuffer, int size) {
+	int generateParticles(vec2 pos, float w, float h, int start, CudaGLBuffer &buffer, CudaBuffer &softBuffer, int size)
+	{
 		int rows = (int)(h / CELL_SIZE);
 		int columns = (int)(w / CELL_SIZE);
 
-		float* x = (float*)buffer.hBuffers[0];
-		float* y = (float*)buffer.hBuffers[1];
-		float* r = (float*)buffer.hBuffers[2];
-		float* lx = (float*)buffer.hBuffers[3];
-		float* ly = (float*)buffer.hBuffers[4];
+		float *x = (float *)buffer.hBuffers[0];
+		float *y = (float *)buffer.hBuffers[1];
+		float *r = (float *)buffer.hBuffers[2];
+		float *lx = (float *)buffer.hBuffers[3];
+		float *ly = (float *)buffer.hBuffers[4];
 
-		int* ids = (int*) softBuffer.hBuffers[0];
+		int *ids = (int *)softBuffer.hBuffers[0];
 
 		dim3 cells(16, 16);
 		dim3 blocks(Utility::intCeil(columns, cells.x), Utility::intCeil(rows, cells.y));
 
-		int* dPtr = nullptr;
+		int *dPtr = nullptr;
 
 		cudaMalloc(&dPtr, sizeof(int));
 		cudaMemcpy(dPtr, &start, sizeof(int), cudaMemcpyHostToDevice);

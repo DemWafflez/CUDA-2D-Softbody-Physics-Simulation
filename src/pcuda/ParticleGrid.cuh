@@ -3,10 +3,10 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
-#include<thrust/sort.h>
-#include<thrust/device_ptr.h>
-#include<thrust/gather.h>
-#include<thrust/host_vector.h>
+#include <thrust/sort.h>
+#include <thrust/device_ptr.h>
+#include <thrust/gather.h>
+#include <thrust/host_vector.h>
 
 #include "../ogl/CircleVao.h"
 #include "../utils/Utility.h"
@@ -17,6 +17,7 @@
 
 #include "HelperGrid.cu"
 
-namespace ParticleGrid {
-	void build(CudaGLBuffer& buffer, CudaBuffer& temp, CudaBuffer& mapBuffer, CudaBuffer& softBuffer, CudaBuffer& temp2, int size);
+namespace ParticleGrid
+{
+	void build(CudaGLBuffer &buffer, CudaBuffer &temp, CudaBuffer &mapBuffer, CudaBuffer &softBuffer, CudaBuffer &temp2, int size);
 }

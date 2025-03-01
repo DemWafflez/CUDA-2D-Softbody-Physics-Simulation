@@ -1,15 +1,16 @@
 #pragma once
 
 #include <GL/glew.h>
-#include<cuda_runtime.h>
-#include<cuda_gl_interop.h>
-#include<iostream>
-#include<vector>
+#include <cuda_runtime.h>
+#include <cuda_gl_interop.h>
+#include <iostream>
+#include <vector>
 
 #include "CudaUtility.h"
 #include "../utils/Utility.h"
 
-class CudaGLBuffer {
+class CudaGLBuffer
+{
 public:
 	CudaGLBuffer(int size, int count);
 	CudaGLBuffer(vector<int> sizes);
@@ -19,8 +20,9 @@ public:
 
 	vector<GLuint> vbos;
 
-	vector<void*> hBuffers;
-	void** dBuffers;
+	vector<void *> hBuffers;
+	void **dBuffers;
+
 private:
-	vector<cudaGraphicsResource*> resources;
+	vector<cudaGraphicsResource *> resources;
 };

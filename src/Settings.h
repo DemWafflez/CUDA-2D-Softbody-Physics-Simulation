@@ -1,7 +1,8 @@
 #pragma once
 
-namespace Settings {
-	constexpr int WORLD_WIDTH = 40000;
+namespace Settings
+{
+	constexpr int WORLD_WIDTH = 70000;
 	constexpr int WORLD_HEIGHT = WORLD_WIDTH / 4;
 	constexpr int CENTER_X = WORLD_WIDTH / 2;
 	constexpr int CENTER_Y = WORLD_HEIGHT / 2;
@@ -18,10 +19,10 @@ namespace Settings {
 	constexpr float G = 600.0f;
 	constexpr double G_DT_DT = G * DT * DT;
 
-	constexpr float MOUSE_FORCE = 0.05f * DT;
+	constexpr float MOUSE_FORCE = 0.02f * DT;
 	constexpr float MOUSE_MAX_DISTANCE = RADIUS * 50;
 
-	constexpr float MOUSE_SENSITIVITY = 2.5f;
+	constexpr float MOUSE_SENSITIVITY = 1.0f;
 	constexpr float MOUSE_ZOOM_SPEED = 1.25f;
 
 	constexpr float SPRING_INITIAL_STRETCH = 1.001f;
@@ -39,7 +40,7 @@ namespace Settings {
 	constexpr float PARTICLE_HARDNESS = 80 * DT;
 	constexpr int MAX_PARTICLES = 1 << 22;
 
-	// fixed softbody size because cuda loves predictability! fuckkk 
+	// fixed softbody size because cuda loves predictability! fuckkk
 	constexpr int R_BODY_COUNT = 64;
 	constexpr int BODY_COUNT = R_BODY_COUNT * R_BODY_COUNT;
 
