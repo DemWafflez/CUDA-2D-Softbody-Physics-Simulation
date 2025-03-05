@@ -1,8 +1,13 @@
-This is one of my longest projects I've ever worked on (2 months) and I think that this is it for now. Started out in Java, then to C++, then ported to CUDA. I barely even knew any C++ before this let alone CUDA! I was so disappointed in the Java performance which forced me to learn C++ to be able to scale more, then CUDA as the final boss (thanks Omise31 for the idea). CUDA was definitely overkill, but it exposed me to the world of gpu programming! I might even do a 3D version of this in the future (90-100%).
+🚨 THIS REPO IS GOING TO BE ARCHIVED 🚨
 
-I rarely use github (3rd or 4th time) so I have no idea what I'm doing right now. 
+This project is pretty much final despite a lot of imperfections. I don't want to be held back by this project which is why I'm deciding to achive 👍.
 
-Scales up to 3-4M Particles at 6 substeps on my RTX 4070 before going under 60 fps so I think any NVIDIA gpu can handle this. Very memory bandwidth intensive!!!
+------------------------
+
+
+This is one of the longest projects I've ever worked on (2 months) and I think that this is it for now. I started out in Java, then to C++, then ported to CUDA. I barely even knew any C++ before this let alone CUDA. Java's performance sucked ass for this (no suprise) which led me to learn C++ to be able to scale more, then unexpectedly, CUDA (thanks Omise31 for the idea). CUDA was definitely overkill (nah), but it led me down the rabbit hole of gpu programming. Cant't look back anymore after realizing how much fucking faster and more efficient the gpu can do certain tasks. 
+
+Scales up to 3-4M Particles at 6 substeps on my RTX 4070 before going under 60 fps. I wonder how much the RTX 5090 can do (2-3x?). Very memory bandwidth intensive!!!!
 
 Video:
 
